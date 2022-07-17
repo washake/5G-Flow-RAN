@@ -69,7 +69,7 @@ bs.lastserveduser_ul = ind(1);
 %% UL DL Configuration
 uldl_config = [1,0,0,1,0,0,1,0,0,1]; % 1 for DL and 0 for UL
 %% Starting Simulation
-sim_time = 1000; % in ms
+sim_time = 100; % in ms
 k = sim_time/100; % for progress evaluation
 k0 = k; % for progress evaluation
 param.slot_sim = 0.001/4;%in seconds
@@ -101,32 +101,32 @@ end
 
 
 %% Plot
-% figure(1);
-% pos = [ue.pos]';
-% plot(pos(:,1), pos(:,2), '+b');
-% hold on;
-% L = 500;
-% l = param.wifirange;
-% plot((L)/2,(L)/2, 'ok','MarkerSize',5);
-% plot(xy(:,1), xy(:,2), '^r','MarkerFaceColor','red');
-% labels = cellstr(num2str((1:param.nWiFi)'));
-% %labels_usr = cellstr(num2str([1:param.nUEs]'));
-% text(xy(:,1), xy(:,2), labels, 'VerticalAlignment','bottom','HorizontalAlignment','right');
-% %text(pos(:,1), pos(:,2), labels_usr, 'VerticalAlignment','bottom','HorizontalAlignment','right');
-% th = 0:pi/50:2*pi;
-% for i=1:param.nWiFi
-%     xunit = (l)*cos(th) + xy(i,1);
-%     yunit = (l)*sin(th) + xy(i,2);
-%     plot(xunit, yunit, '-k');
-% end
-% xunit = (L/2)*cos(th) + (L/2);
-% yunit = (L/2)*sin(th) + (L/2);
-% plot(xunit, yunit, '-k');
-% axis square;
-% axis([0 L 0 L]);
-% hold off;
-% drawnow;
-% saveas(gcf,['results/ex_' num2str(seed) '_' num2str(param.nUEs) '_' num2str(param.nWiFi) '.jpg']);
+figure(1);
+pos = [ue.pos]';
+plot(pos(:,1), pos(:,2), '+b');
+hold on;
+L = 500;
+l = param.wifirange;
+plot((L)/2,(L)/2, 'ok','MarkerSize',5);
+plot(xy(:,1), xy(:,2), '^r','MarkerFaceColor','red');
+labels = cellstr(num2str((1:param.nWiFi)'));
+%labels_usr = cellstr(num2str([1:param.nUEs]'));
+text(xy(:,1), xy(:,2), labels, 'VerticalAlignment','bottom','HorizontalAlignment','right');
+%text(pos(:,1), pos(:,2), labels_usr, 'VerticalAlignment','bottom','HorizontalAlignment','right');
+th = 0:pi/50:2*pi;
+for i=1:param.nWiFi
+    xunit = (l)*cos(th) + xy(i,1);
+    yunit = (l)*sin(th) + xy(i,2);
+    plot(xunit, yunit, '-k');
+end
+xunit = (L/2)*cos(th) + (L/2);
+yunit = (L/2)*sin(th) + (L/2);
+plot(xunit, yunit, '-k');
+axis square;
+axis([0 L 0 L]);
+hold off;
+%drawnow;
+%saveas(gcf,['results/ex_' num2str(seed) '_' num2str(param.nUEs) '_' num2str(param.nWiFi) '.jpg']);
 %% Results
 
 clc
@@ -163,20 +163,21 @@ wifi_txthrpt_ul = sum([wifi.rxbits_ul])/1e6;
 %ue_rxthrpt = sum([ue.rxbits_dl])/1e6;
 delay_ul = mean([bs.delay_ul/bs.rxpckts_ul, [wifi.delay_ul]./([wifi.rxpckts_ul]+0.0001)]);
 
-% fprintf('************************UPLINK******************** \n');
-% fprintf('PHY Layer Throughput: %.2f Mbps\n', txthrpt_ul);
-% fprintf('gNB - PHY Layer Throughput: %.2f Mbps\n', gnb_txthrpt_ul);
-% fprintf('Wi-Fi - PHY Layer Throughput: %.2f Mbps\n', wifi_txthrpt_ul);
-% %fprintf('APP Layer Througput: %.2f Mbps\n \n', ue_rxthrpt_ul);
-% fprintf('Avg. Packet Delay: %.2f ms\n',delay_ul);
-% fprintf('UE connected with gNB: %d \n \n',sum([ue.attach]==0));
+fprintf('************************UPLINK******************** \n');
+fprintf('PHY Layer Throughput: %.2f Mbps\n', txthrpt_ul);
+fprintf('gNB - PHY Layer Throughput: %.2f Mbps\n', gnb_txthrpt_ul);
+fprintf('Wi-Fi - PHY Layer Throughput: %.2f Mbps\n', wifi_txthrpt_ul);
+%fprintf('APP Layer Througput: %.2f Mbps\n \n', ue_rxthrpt_ul);
+fprintf('Avg. Packet Delay: %.2f ms\n',delay_ul);
+fprintf('UE connected with gNB: %d \n \n',sum([ue.attach]==0));
 
 if param.policy == 2
     str = sprintf('results/5g_%dU_%dW.csv',param.nUEs,param.nWiFi);
 else
     str = sprintf('results/5gflow_%dU_%dW.csv',param.nUEs,param.nWiFi);
 end
-fileID = fopen(str,'a');
+%fileID = fopen(str,'a');
+fileID = fopen('test.txt','w');
 fprintf(fileID,"\n %d, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %d",...
     seed, txbits, gnb_txthrpt, wifi_txthrpt,ue_rxthrpt, delay,txthrpt_ul, gnb_txthrpt_ul, wifi_txthrpt_ul, delay_ul, ue_bs_attach);
 fclose(fileID);
